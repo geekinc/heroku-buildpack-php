@@ -140,6 +140,7 @@ function install_composer_deps() {
 
     status "Installing application dependencies with Composer"
     {
+        echo "$target" | indent
         # cd "$target"
         php "vendor/composer/bin/composer.phar" install \
             --prefer-dist \
