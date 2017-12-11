@@ -90,14 +90,18 @@ function install_composer_deps() {
 
     status "Vendoring Composer"
     echo "Updating Composer " | indent
-    curl "https://s3-us-west-2.amazonaws.com/geek-bonita/composer.phar" > "$CACHE_DIR/composer.phar" | indent
+    curl --silent "https://s3-us-west-2.amazonaws.com/geek-bonita/composer.phar" > "$CACHE_DIR/composer.phar" | indent
     chmod a+x "$CACHE_DIR/composer.phar"
-    echo "Composer Update Complete" | indent
 
+    echo "Installing Composer" | indent
     cp "$CACHE_DIR/composer.phar" "$target/vendor/composer/bin/"
 
+    echo "Gathering Extensions" | indent
     local required_extensions=$(jq --raw-output '.require | keys | .[]' < "$BUILD_DIR/composer.json" | grep '^ext-' | sed 's/^ext-//')
+
+    echo "Setting Extension Directory" | indent
     local ext_dir=/app/vendor/php/lib/php/extensions/no-debug-non-zts-$(php_api_version)
+    
     if [ -n "$required_extensions" ]; then
         status "Bundling additional extensions"
         for ext in $required_extensions; do
@@ -126,7 +130,8 @@ function install_composer_deps() {
         done
     fi
 
-    php "vendor/composer/bin/composer.phar" self-update
+    
+    # php "vendor/composer/bin/composer.phar" self-update
 
     if [ -n "$COMPOSER_GITHUB_TOKEN" ]; then
         status "Configuring the github authentication for Composer"
