@@ -140,7 +140,7 @@ function install_composer_deps() {
 
     status "Installing application dependencies with Composer"
     {
-        cd "$target"
+        # cd "$target"
         php "vendor/composer/bin/composer.phar" install \
             --prefer-dist \
             --optimize-autoloader \
@@ -155,9 +155,9 @@ function install_node_deps() {
     local cwd=$(pwd)
     local target="$1"
 
-    if [ ! -f "$target/package.json" ]; then
-        return 0
-    fi
+    #if [ ! -f "$target/package.json" ]; then
+    #    return 0
+    #fi
 
     status "NODE (package.json) app detected"
 
